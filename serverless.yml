@@ -1,0 +1,89 @@
+org: marccasimiro
+app: project-service
+service: project-service
+frameworkVersion: '3'
+
+provider:
+    name: aws
+    runtime: nodejs18.x
+    timeout: 30
+    environment:
+        DB_HOST: ${self:custom.secrets.DB_HOST}
+        DB_NAME: ${self:custom.secrets.DB_NAME}
+        DB_USER: ${self:custom.secrets.DB_USER}
+        DB_PASSWORD: ${self:custom.secrets.DB_PASSWORD}
+
+plugins:
+    - serverless-prune-versions
+    - serverless-esbuild
+    - serverless-offline
+
+custom:
+    prune:
+        automatic: true
+        number: 3
+    secrets: ${file(secrets.json)}
+
+functions:
+    create:
+        handler: src/handlers/create.handler
+        events:
+            - http:
+                  path: /create
+                  method: post
+
+    view:
+        handler: src/handlers/view.handler
+        events:
+            - http:
+                  path: /view
+                  method: get
+
+    populate:
+        handler: src/handlers/populateDb.handler
+        events:
+            - http:
+                path: /populate
+                method: post
+
+    createBook:
+        handler: src/handlers/books/create.handler
+        events:
+            - http:
+                path: /book/create
+                method: post
+
+    deleteBook:
+        handler: src/handlers/books/delete.handler
+        events:
+            - http:
+                path: /book/delete
+                method: delete
+    
+    updateBook:
+        handler: src/handlers/books/update.handler
+        events:
+            - http:
+                path: /book/update
+                method: put
+                
+    getAllBooks:
+        handler: src/handlers/books/getAll.handler
+        events:
+            - http:
+                path: /book/getAll
+                method: get
+
+    createUser:
+        handler: src/handlers/users/create.handler
+        events:
+            - http:
+                path: /user/create
+                method: post
+
+    getBooksPerAuthor:
+        handler: src/handlers/getBooksPerAuthor.handler
+        events:
+            - http:
+                path: /getBooksPerAuthor
+                method: get
