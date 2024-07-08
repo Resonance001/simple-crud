@@ -1,13 +1,11 @@
-import type { APIGatewayProxyStructuredResultV2, Handler } from "aws-lambda";
-import { Books, Authors } from "../models/models";
-import { books } from "../utilities/populateDb";
-import sequelize from "../sequelizeConfig";
+import type { APIGatewayProxyStructuredResultV2, Handler } from 'aws-lambda';
+import { Books, Authors, Users, BorrowedBooks } from '../models/models';
+import { books, authors, users, borrowedBooks } from '../utilities/populateDb';
 
 export const handler: Handler =
-	async (): Promise<APIGatewayProxyStructuredResultV2> => {
-		// await Authors.sync();
-
-		await sequelize.sync({force: true}).then(() =>
+    async (): Promise<APIGatewayProxyStructuredResultV2> => {
+        /*
+		await Authors.sync({force: true}).then(() => Books.sync({force: true}).then(() =>
 			books.map(async (book) => {
 				const { isbn, bookName, firstName, lastName, genre } = book;
 
@@ -21,96 +19,86 @@ export const handler: Handler =
 						},
 					},
 					{
-						include: [ Authors ],
+						include: [ bookAuthor ],
 					}
 				);
 			})
-		)
-		// await Authors.sync().then(() =>
-		// 	Books.sync().then(() =>
-		// 		books.map(async (book) => {
-		// 			const { isbn, bookName, firstName, lastName, genre } = book;
+		))
+		*/
 
-		// 			await Books.create(
-		// 				{
-		// 					isbn,
-		// 					bookName,
-		// 					genre,
-		// 					Authors: [{ firstName: firstName, lastName: lastName }],
-		// 				},
-		// 				{
-		// 					include: [ Authors ],
-		// 				}
-		// 			);
-		// 		})
-		// 	)
-		// );
+        // await Authors.sync();
 
-		// User.create({
-		// 	username: 'john_doe',
-		// 	email: 'john@example.com',
-		// 	Posts: [
-		// 	  { title: 'First post', content: 'This is my first post' },
-		// 	  { title: 'Second post', content: 'This is another post' }
-		// 	]
-		//   }, {
-		// 	include: [ Post ] // Include the associated model (Post) when creating User
-		//   }).then(user => {
-		// 	console.log(user); // User instance with associated Posts
-		//   }).catch(err => {
-		// 	console.error('Error creating user:', err);
-		//   });
+        await Books.sync().then(() =>
+            books.map(async (book) => {
+                const { isbn, bookName, authorName, genre } = book;
 
-		// await Authors.sync();
+                try {
+                    await Books.create({
+                        isbn,
+                        bookName,
+                        authorName,
+                        genre,
+                    });
+                } catch (err) {
+                    console.log(err);
+                }
+            })
+        );
 
-		// await Books.sync().then(() =>
-		// 	books.map(async (book) => {
-		// 		const { isbn, bookName, authorName, genre } = book;
+        await Authors.sync().then(() =>
+            authors.map(async (author) => {
+                const { firstName, lastName } = author;
 
-		// 		try{
-		// 			await Books.create({
-		// 				isbn,
-		// 				bookName,
-		// 				authorName,
-		// 				genre,
-		// 			});
-		// 		} catch(err){
-		// 			console.log(err);
-		// 		}
-		// 	})
-		// );
+                const currAuthor = await Authors.findOne({
+                    where: { firstName: firstName, lastName: lastName },
+                });
+                if (currAuthor == null) {
+                    await Authors.create({
+                        firstName,
+                        lastName,
+                    });
+                }
+            })
+        );
 
-		// authors.map(async (author) => {
-		// 	const { firstName, lastName } = author;
+        await Users.sync().then(() =>
+            users.map(async (user) => {
+                const { userId, firstName, lastName, role } = user;
 
-		// 	const currAuthor = await Authors.findOne({
-		// 		where: { firstName: firstName, lastName: lastName },
-		// 	});
-		// 	if (currAuthor == null) {
-		// 		await Authors.create({
-		// 			firstName,
-		// 			lastName,
-		// 		});
-		// 	}
-		// })
+                try {
+                    await Users.create({
+                        userId,
+                        firstName,
+                        lastName,
+                        role,
+                    });
+                } catch (err) {
+                    console.log(err);
+                }
+            })
+        );
 
-		// await Authors.sync().then(() =>
-		// 	authors.map(async (author) => {
-		// 		const { firstName, lastName } = author;
+        await BorrowedBooks.sync().then(() => {
+            borrowedBooks.map(async (book) => {
+                var { userId, isbn, role } = book;
 
-		// 		const currAuthor = await Authors.findOne({
-		// 			where: { firstName: firstName, lastName: lastName },
-		// 		});
-		// 		if (currAuthor == null) {
-		// 			await Authors.create({
-		// 				firstName,
-		// 				lastName,
-		// 			});
-		// 		}
-		// 	})
-		// );
+                if (role == null) {
+                    const user = await Users.findOne({
+                        where: { userId: userId },
+                    });
+                    role = user.dataValues.role;
+                }
+                if (userId) {
+                    await BorrowedBooks.create({
+                        userId,
+                        role,
+                        isbn,
+                    });
+                }
+            });
+        });
 
-		return {
-			statusCode: 200,
-		};
-	};
+        return {
+            statusCode: 200,
+        };
+    };

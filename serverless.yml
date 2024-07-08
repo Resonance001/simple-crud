@@ -25,65 +25,86 @@ custom:
     secrets: ${file(secrets.json)}
 
 functions:
-    create:
-        handler: src/handlers/create.handler
-        events:
-            - http:
-                  path: /create
-                  method: post
-
-    view:
-        handler: src/handlers/view.handler
-        events:
-            - http:
-                  path: /view
-                  method: get
-
     populate:
         handler: src/handlers/populateDb.handler
         events:
             - http:
-                path: /populate
-                method: post
+                  path: /populate
+                  method: post
 
     createBook:
         handler: src/handlers/books/create.handler
         events:
             - http:
-                path: /book/create
-                method: post
+                  path: /book/create
+                  method: post
 
     deleteBook:
         handler: src/handlers/books/delete.handler
         events:
             - http:
-                path: /book/delete
-                method: delete
-    
+                  path: /book/delete
+                  method: delete
+
     updateBook:
         handler: src/handlers/books/update.handler
         events:
             - http:
-                path: /book/update
-                method: put
-                
-    getAllBooks:
-        handler: src/handlers/books/getAll.handler
+                  path: /book/update
+                  method: put
+
+    getBooks:
+        handler: src/handlers/books/get.handler
         events:
             - http:
-                path: /book/getAll
-                method: get
+                  path: /book/get
+                  method: get
 
     createUser:
         handler: src/handlers/users/create.handler
         events:
             - http:
-                path: /user/create
-                method: post
+                  path: /user/create
+                  method: post
 
-    getBooksPerAuthor:
-        handler: src/handlers/getBooksPerAuthor.handler
+    deleteUser:
+        handler: src/handlers/users/delete.handler
         events:
             - http:
-                path: /getBooksPerAuthor
-                method: get
+                  path: /user/delete
+                  method: delete
+
+    updateUser:
+        handler: src/handlers/users/update.handler
+        events:
+            - http:
+                  path: /user/update
+                  method: put
+
+    getUser:
+        handler: src/handlers/users/get.handler
+        events:
+            - http:
+                  path: /user/get
+                  method: get
+
+    createBorrowedBook:
+        handler: src/handlers/borrowedBooks/create.handler
+        events:
+            - http:
+                  path: /borrowedBook/create
+                  method: post
+
+    deleteBorrowedBook:
+        handler: src/handlers/borrowedBooks/delete.handler
+        events:
+            - http:
+                  path: /borrowedBook/delete
+                  method: delete
+
+    # getBooksPerAuthor:
+    #     handler: src/handlers/getBooksPerAuthor.handler
+    #     events:
+    #         - http:
+    #               path: /getBooksPerAuthor
+    #               method: get

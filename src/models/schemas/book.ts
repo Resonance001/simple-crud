@@ -1,13 +1,10 @@
-import { DataTypes } from "sequelize";
+import { DataTypes } from 'sequelize';
 
 const bookSchema = {
-    isbn: {
-        type: DataTypes.BIGINT,
-        // primaryKey: true,
-    },
+    isbn: DataTypes.BIGINT,
     bookName: DataTypes.STRING,
-    // authorName: DataTypes.STRING,
+    authorName: DataTypes.STRING,
     genre: DataTypes.STRING,
 };
-  
+
 export default bookSchema;

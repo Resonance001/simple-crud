@@ -4,25 +4,15 @@ import { Books, Authors } from '../models/models';
 export const handler: Handler =
 	async (): Promise<APIGatewayProxyStructuredResultV2> => {
 
-		// const allInstances = await Authors.findAll({
-        //     // attributes: [fullName, bookName],
-        //     include: {
-        //         model: Books,
-        //         // as: 'authorList',
-        //         // required: true,
-        //     }
-        // });
-
-        const allInstances = await Books.findAll({
+        // TODO
+		const allInstances = await Authors.findAll({
             // attributes: [fullName, bookName],
             include: {
-                model: Authors,
+                model: Books,
                 // as: 'authorList',
                 // required: true,
             }
-        });
-
-        
+        });        
 
 		return {
 			statusCode: 200,

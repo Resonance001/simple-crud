@@ -1,34 +1,36 @@
 import type {
-	APIGatewayProxyStructuredResultV2,
-	APIGatewayProxyEventV2,
-	Handler,
-} from "aws-lambda";
-import { User } from "../../models/models";
-import { Op } from "sequelize";
+    APIGatewayProxyStructuredResultV2,
+    APIGatewayProxyEventV2,
+    Handler,
+} from 'aws-lambda';
+import { Users } from '../../models/models';
+// import { Op } from 'sequelize';
 
 export const handler: Handler = async (
-	event: APIGatewayProxyEventV2
+    event: APIGatewayProxyEventV2
 ): Promise<APIGatewayProxyStructuredResultV2> => {
-	const { userId, books } = JSON.parse(event.body) || {};
+    // const { userId, books } = JSON.parse(event.body) || {};
 
-	await User.sync();
+    // TODO: DataTypes.ARRAY for postgres, Association for MySQL
 
-    const student = await User.findByPk(userId);
+    // await Users.sync();
 
-    student.dataValues.books = [student.dataValues.books, ...books];
+    // const student = await Users.findByPk(userId);
 
-    return {
-        statusCode: 200,
-    }
+    // student.dataValues.books = [student.dataValues.books, ...books];
 
-	// const user = await User.findOne({
-	// 	where: {
-	// 		[Op.or]: [
-	// 			{ userId: userId },
-	// 			{ firstName: firstName, lastName: lastName },
-	// 		],
-	// 	},
-	// }).then(user => {
+    // return {
+    //     statusCode: 200,
+    // };
+
+    // const user = await User.findOne({
+    // 	where: {
+    // 		[Op.or]: [
+    // 			{ userId: userId },
+    // 			{ firstName: firstName, lastName: lastName },
+    // 		],
+    // 	},
+    // }).then(user => {
     //     if(user){
 
     //     } else{
@@ -39,10 +41,13 @@ export const handler: Handler = async (
     // return{
     //     statusCode: 200,
     // }
-	// if (user) {
-	// 	return {
-	// 		statusCode: 400,
-	// 	};
-	// }
-	
+    // if (user) {
+    // 	return {
+    // 		statusCode: 400,
+    // 	};
+    // }
+
+    return {
+        statusCode: 200,
+    };
 };
